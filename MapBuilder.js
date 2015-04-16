@@ -1,6 +1,7 @@
-function MapBuilder(walls) {
+function MapBuilder(walls, boxWorld) {
    this.walls = walls;
-   this.createMap();
+   this.createMap(boxWorld);
+   this.floor;
 }
 
 MapBuilder.WALL_HEIGHTS = [
@@ -11,43 +12,54 @@ MapBuilder.WALL_HEIGHTS = [
   128  // Highest slice
 ];
 
-MapBuilder.prototype.createMap = function() {
-	this.createWallSpan(3, 9, true);
-	this.createGap(1);
-	this.createWallSpan(1, 30);
-	this.createGap(1);
-	this.createWallSpan(2, 18);
-	this.createGap(1);
-	this.createSteppedWallSpan(2, 5, 28);
-	this.createGap(1);
-	this.createWallSpan(1, 10);
-	this.createGap(1);
-	this.createWallSpan(2, 6); 
-	this.createGap(1);
-	this.createWallSpan(1, 8);
-	this.createGap(1);
-	this.createWallSpan(2, 6);
-	this.createGap(1);
-	this.createWallSpan(1, 8);
-	this.createGap(1)
-	this.createWallSpan(2, 7);
-	this.createGap(1);
-	this.createWallSpan(1, 16);
-	this.createGap(1);
-	this.createWallSpan(2, 6);
-	this.createGap(1);
-	this.createWallSpan(1, 22);
-	this.createGap(2);
-	this.createWallSpan(2, 14);
-	this.createGap(2);
-	this.createWallSpan(3, 8);
-	this.createGap(2);
-	this.createSteppedWallSpan(3, 5, 12);
-	this.createGap(3);
-	this.createWallSpan(0, 8);
-	this.createGap(3);
-	this.createWallSpan(1, 50);
-	this.createGap(20);
+MapBuilder.prototype.createMap = function(boxWorld) {
+	this.createWallSpan(0, 25, true);
+
+	const polyFixture = new Box2D.Dynamics.b2FixtureDef();
+    polyFixture.shape = new Box2D.Collision.Shapes.b2PolygonShape();
+    polyFixture.density = 1;
+
+    const bodyDef = new Box2D.Dynamics.b2BodyDef();
+    bodyDef.type = Box2D.Dynamics.b2Body.b2_staticBody;
+
+    polyFixture.shape.SetAsBox((1000), 1);
+    bodyDef.position.Set((250), 256);
+    this.floor = boxWorld.CreateBody(bodyDef).CreateFixture(polyFixture);
+
+    console.log(boxWorld);
+
+	// this.createWallSpan(2, 18);
+	// this.createGap(1);
+	// this.createSteppedWallSpan(2, 5, 28);
+	// this.createGap(1);
+	// this.createWallSpan(1, 10);
+	// this.createGap(1);
+	// this.createWallSpan(2, 6); 
+	// this.createGap(1);
+	// this.createWallSpan(1, 8);
+	// this.createGap(1);
+	// this.createWallSpan(2, 6);
+	// this.createGap(1);
+	// this.createWallSpan(1, 8);
+	// this.createGap(1)
+	// this.createWallSpan(2, 7);
+	// this.createGap(1);
+	// this.createWallSpan(1, 16);
+	// this.createGap(1);
+	// this.createWallSpan(2, 6);
+	// this.createGap(1);
+	// this.createWallSpan(1, 22);
+	// this.createGap(2);
+	// this.createWallSpan(2, 14);
+	// this.createGap(2);
+	// this.createWallSpan(3, 8);
+	// this.createGap(2);
+	// this.createSteppedWallSpan(3, 5, 12);
+	// this.createGap(3);
+	// this.createWallSpan(0, 8);
+	// this.createGap(3);
+	// this.createWallSpan(1, 50);
+	// this.createGap(20);
 };
 
 MapBuilder.prototype.createGap = function(spanLength) {
@@ -123,4 +135,63 @@ MapBuilder.prototype.createSteppedWallSpan = function(
   this.createWallSpan(heightIndex, spanALength, false, true);
   this.addWallStep(heightIndex - 2);
   this.createWallSpan(heightIndex - 2, spanBLength - 1, true, false);
+};
+
+MapBuilder.prototype.generateNextWall = function(boxWorld) {
+
+	// const polyFixture = new Box2D.Dynamics.b2FixtureDef();
+ //    polyFixture.shape = new Box2D.Collision.Shapes.b2PolygonShape();
+ //    polyFixture.density = 1;
+
+ //    const bodyDef = new Box2D.Dynamics.b2BodyDef();
+ //    bodyDef.type = Box2D.Dynamics.b2Body.b2_staticBody;
+
+ //    polyFixture.shape.SetAsBox(10, 1);
+ //    bodyDef.position.Set(9, STAGE_HEIGHT / METER + 1);
+ //    boxWorld.CreateBody(bodyDef).CreateFixture(polyFixture);
+
+
+	var height = Math.floor((Math.random() * 5));
+	var width = Math.floor((Math.random() * 25) + 5);
+	var width2 = Math.floor((Math.random() * 25) + 5);
+	var gap = Math.floor((Math.random() * 2) + 1);
+
+	var front = false;
+	var stepped = false;
+
+	if ( Math.floor((Math.random() * 2)) == 0 ) {
+		front = false;
+	}
+	else {
+		front = true;
+	}
+
+	if ( Math.floor((Math.random() * 2)) == 0 ) {
+		stepped = false;
+	}
+	else {
+		stepped = true;
+	}
+
+	// this.floor.m_body.m_xf.position.y = 500;
+
+	// this.floor.m_body.SetTransform(new Box2D.Common.Math.b2Vec2(0, 400), 0);
+	// this.floor.m_body.SetTransform(this.floor.m_body.GetPosition(), 0);
+	var transform = new Box2D.Common.Math.b2Transform;
+	transform.position.y = MapBuilder.WALL_HEIGHTS[height];
+	console.log(transform);
+	console.log(this.floor.m_body.GetPosition());
+	console.log(this.floor.GetBody().SetTransform(transform));
+
+	if(stepped) {
+		this.createGap(gap);
+		this.createSteppedWallSpan(0, width, width2);
+		return width + width2;
+	}
+	else {
+		this.createGap(gap);
+		this.createWallSpan(height, width, front);
+		return width;
+	}
+	
 };

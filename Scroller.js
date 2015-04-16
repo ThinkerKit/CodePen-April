@@ -1,4 +1,4 @@
-function Scroller(stage) {
+function Scroller(stage, boxWorld) {
 	this.far = new Far();
 	stage.addChild(this.far);
 
@@ -8,23 +8,33 @@ function Scroller(stage) {
 	this.front = new Walls();
   	stage.addChild(this.front);
 
-  	this.mapBuilder = new MapBuilder(this.front);
+  	this.mapBuilder = new MapBuilder(this.front, boxWorld);
 
 	this.viewportX = 0;
+	this.distance = 25 * 64;
 }
 
-Scroller.prototype.setViewportX = function(viewportX) {
+Scroller.prototype.setViewportX = function(viewportX, boxWorld) {
 	this.viewportX = viewportX;
 	this.far.setViewportX(viewportX);
 	this.mid.setViewportX(viewportX);
 	this.front.setViewportX(viewportX);
+
+	// var genesis = Math.floor(viewportX) % this.distance;
+	// var genesis = viewportX
+	// console.log(viewportX);
+	if((this.distance) < viewportX) {
+		// console.log(boxWorld);
+		var newWallDistance = this.mapBuilder.generateNextWall(boxWorld);
+		this.distance += newWallDistance * 64;
+	}
 };
 
 Scroller.prototype.getViewportX = function() {
 	return this.viewportX;
 };
 
-Scroller.prototype.moveViewportXBy = function(units) {
+Scroller.prototype.moveViewportXBy = function(units, boxWorld) {
 	var newViewportX = this.viewportX + units;
-	this.setViewportX(newViewportX);
+	this.setViewportX(newViewportX, boxWorld);
 };
