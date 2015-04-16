@@ -20,11 +20,7 @@ Scroller.prototype.setViewportX = function(viewportX, boxWorld) {
 	this.mid.setViewportX(viewportX);
 	this.front.setViewportX(viewportX);
 
-	// var genesis = Math.floor(viewportX) % this.distance;
-	// var genesis = viewportX
-	// console.log(viewportX);
-	if((this.distance) < viewportX) {
-		// console.log(boxWorld);
+	if((this.distance) < viewportX) {		
 		var newWallDistance = this.mapBuilder.generateNextWall(boxWorld);
 		this.distance += newWallDistance * 64;
 	}

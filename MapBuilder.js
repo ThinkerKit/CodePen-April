@@ -13,20 +13,19 @@ MapBuilder.WALL_HEIGHTS = [
 ];
 
 MapBuilder.prototype.createMap = function(boxWorld) {
-	this.createWallSpan(0, 25, true);
+	this.createWallSpan(2, 25, true);
 
 	const polyFixture = new Box2D.Dynamics.b2FixtureDef();
     polyFixture.shape = new Box2D.Collision.Shapes.b2PolygonShape();
     polyFixture.density = 1;
+    polyFixture.restitution = 1.0;
 
     const bodyDef = new Box2D.Dynamics.b2BodyDef();
     bodyDef.type = Box2D.Dynamics.b2Body.b2_staticBody;
 
     polyFixture.shape.SetAsBox((1000), 1);
-    bodyDef.position.Set((250), 256);
+    bodyDef.position.Set((250), 192);
     this.floor = boxWorld.CreateBody(bodyDef).CreateFixture(polyFixture);
-
-    console.log(boxWorld);
 
 	// this.createWallSpan(2, 18);
 	// this.createGap(1);
@@ -151,7 +150,7 @@ MapBuilder.prototype.generateNextWall = function(boxWorld) {
  //    boxWorld.CreateBody(bodyDef).CreateFixture(polyFixture);
 
 
-	var height = Math.floor((Math.random() * 5));
+	var height = Math.floor((Math.random() * 3));
 	var width = Math.floor((Math.random() * 25) + 5);
 	var width2 = Math.floor((Math.random() * 25) + 5);
 	var gap = Math.floor((Math.random() * 2) + 1);
@@ -179,9 +178,8 @@ MapBuilder.prototype.generateNextWall = function(boxWorld) {
 	// this.floor.m_body.SetTransform(this.floor.m_body.GetPosition(), 0);
 	var transform = new Box2D.Common.Math.b2Transform;
 	transform.position.y = MapBuilder.WALL_HEIGHTS[height];
-	console.log(transform);
-	console.log(this.floor.m_body.GetPosition());
-	console.log(this.floor.GetBody().SetTransform(transform));
+	this.floor.GetBody().SetTransform(transform);
+	// console.log(this.floor.GetBody().GetPosition());
 
 	if(stepped) {
 		this.createGap(gap);
